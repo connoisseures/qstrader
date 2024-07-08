@@ -19,7 +19,7 @@ if __name__ == "__main__":
     start_date = "2024-6-22"
     end_date = "2024-11-30"
 
-    market_selection = "US" # "TW"
+    market_selection = "US"  # "TW"
     benchmark_ticker = "SPY"
 
     # M7
