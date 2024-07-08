@@ -8,4 +8,4 @@ class Yfloader:
         for tk in ticker:
             data = yf.download(tk, start_date, end_date)
             # Export data to a CSV file
-            data.to_csv(f"{ticker}.csv")
+            data.to_csv(f"{tk}.csv")
