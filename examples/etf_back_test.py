@@ -20,6 +20,8 @@ if __name__ == "__main__":
     end_date = "2024-11-30"
 
     market_selection = "US"  # "TW"
+    is_volatile = True  ## False 
+    
     benchmark_ticker = "SPY"
 
     # M7
@@ -33,12 +35,13 @@ if __name__ == "__main__":
         "EQ:FBL": 1.47,
     }
 
-    # high volatile
-    strategy_symbols_allocation = {
-        "EQ:NVDL": 10,
-        "EQ:AMDL": 2,
-        "EQ:ANET": 1.4,
-    }
+    if is_volatile:
+        # high volatile
+        strategy_symbols_allocation = {
+            "EQ:NVDL": 10,
+            "EQ:AMDL": 2,
+            "EQ:ANET": 1.4,
+        }
 
     # TW market -- verified
     if market_selection == "TW":
