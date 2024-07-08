@@ -1,5 +1,5 @@
 import os
-
+import re
 import pandas as pd
 import pytz
 
@@ -11,24 +11,49 @@ from qstrader.data.daily_bar_csv import CSVDailyBarDataSource
 from qstrader.statistics.tearsheet import TearsheetStatistics
 from qstrader.trading.backtest import BacktestTradingSession
 from qstrader.data.yfloader import Yfloader
+from qstrader.utils.helper import normalize_value
 
 if __name__ == "__main__":
-    start_date = "2024-1-1"
+    start_date = "2019-10-31"
     end_date = "2024-11-30"
-    strategy_symbols = ['SPY', 'AGG', 'AAPL', 'AAPU', 'TQQQ']
-    strategy_symbols_allocation = {'EQ:AAPU': 0.6, 'EQ:TQQQ': 0.4}
-    strategy_title = "AAPU-0.6-TQQQ-0.4"
+    benchmark_ticker = "SPY"
+    # strategy_symbols_allocation = {'EQ:SPY': 1.0}
+    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.5}
+    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.3, "EQ:AMZU": 0.2}
+    strategy_symbols_allocation = {
+        # "EQ:AAPL": 4,
+        "EQ:TQQQ": 1,
+        # "EQ:GGLL": 1.1,
+        # "EQ:AMZU": 1.36,
+        # "EQ:MSFU": 1.12,
+        # "EQ:FBL": 1.1,
+    }
 
-    start_dt = pd.Timestamp(f'{start_date} 14:30:00', tz=pytz.UTC)
-    end_dt = pd.Timestamp(f'{end_date} 23:59:00', tz=pytz.UTC)
+    # # TW market -- verified
+    # benchmark_ticker = "2330.TW"
+    # strategy_symbols_allocation = {"EQ:2330.TW": 1.0}
+    # # comparable performance and reduced draw-down.
+    # strategy_symbols_allocation = {"EQ:00713.TW": 1.0, "EQ:00631L.TW": 0.5}
+    # # strategy_symbols_allocation = {'EQ:00713.TW': 1.0}
+
+    strategy_symbols = [k.replace("EQ:", "") for k in strategy_symbols_allocation] + [
+        benchmark_ticker
+    ]
+    strategy_title = str(strategy_symbols_allocation)
+
+    # normalize allocation
+    strategy_symbols_allocation = normalize_value(strategy_symbols_allocation)
+
+    start_dt = pd.Timestamp(f"{start_date} 14:30:00", tz=pytz.UTC)
+    end_dt = pd.Timestamp(f"{end_date} 23:59:00", tz=pytz.UTC)
     # Construct the symbols and assets necessary for the backtest
     Yfloader().load_as_csv(start_dt, end_dt, strategy_symbols)
-    strategy_assets = ['EQ:%s' % symbol for symbol in strategy_symbols]
+    strategy_assets = ["EQ:%s" % symbol for symbol in strategy_symbols]
     strategy_universe = StaticUniverse(strategy_assets)
 
     # To avoid loading all CSV files in the directory, set the
     # data source to load only those provided symbols
-    csv_dir = os.environ.get('QSTRADER_CSV_DATA_DIR', '.')
+    csv_dir = os.environ.get("QSTRADER_CSV_DATA_DIR", ".")
     data_source = CSVDailyBarDataSource(csv_dir, Equity, csv_symbols=strategy_symbols)
     data_handler = BacktestDataHandler(strategy_universe, data_sources=[data_source])
 
@@ -42,29 +67,30 @@ if __name__ == "__main__":
         end_dt,
         strategy_universe,
         strategy_alpha_model,
-        rebalance='end_of_month',
+        rebalance="end_of_month",
         long_only=True,
         cash_buffer_percentage=0.01,
-        data_handler=data_handler
+        data_handler=data_handler,
     )
     strategy_backtest.run()
 
     # Construct benchmark assets (buy & hold SPY)
-    benchmark_assets = ['EQ:SPY']
+    # benchmark_ticker = "SPY"
+    benchmark_assets = [f"EQ:{benchmark_ticker}"]
     benchmark_universe = StaticUniverse(benchmark_assets)
 
     # Construct a benchmark Alpha Model that provides
     # 100% static allocation to the SPY ETF, with no rebalance
-    benchmark_alpha_model = FixedSignalsAlphaModel({'EQ:SPY': 1.0})
+    benchmark_alpha_model = FixedSignalsAlphaModel({f"EQ:{benchmark_ticker}": 1.0})
     benchmark_backtest = BacktestTradingSession(
         start_dt,
         end_dt,
         benchmark_universe,
         benchmark_alpha_model,
-        rebalance='buy_and_hold',
+        rebalance="buy_and_hold",
         long_only=True,
         cash_buffer_percentage=0.01,
-        data_handler=data_handler
+        data_handler=data_handler,
     )
     benchmark_backtest.run()
 
@@ -72,6 +98,12 @@ if __name__ == "__main__":
     tearsheet = TearsheetStatistics(
         strategy_equity=strategy_backtest.get_equity_curve(),
         benchmark_equity=benchmark_backtest.get_equity_curve(),
-        title=strategy_title
+        title=strategy_title,
     )
-    tearsheet.plot_results()
+    export_name = (
+        re.sub(r"[\{,\},EQ:,\']", "", strategy_title)
+        .replace(".TW", "")
+        .replace(" ", "-")
+        + ".pdf"
+    )
+    tearsheet.plot_results(export_name)
