@@ -14,27 +14,38 @@ from qstrader.data.yfloader import Yfloader
 from qstrader.utils.helper import normalize_value
 
 if __name__ == "__main__":
-    start_date = "2019-10-31"
+    # start_date = "2023-10-31"
+    start_date = "2023-5-30"
+    start_date = "2024-6-22"
     end_date = "2024-11-30"
+
+    market_selection = "US" # "TW"
     benchmark_ticker = "SPY"
+
+    # M7
     # strategy_symbols_allocation = {'EQ:SPY': 1.0}
-    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.5}
-    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.3, "EQ:AMZU": 0.2}
     strategy_symbols_allocation = {
-        # "EQ:AAPL": 4,
-        "EQ:TQQQ": 1,
+        "EQ:AAPU": 5,
+        "EQ:TQQQ": 1.5,
         # "EQ:GGLL": 1.1,
-        # "EQ:AMZU": 1.36,
-        # "EQ:MSFU": 1.12,
-        # "EQ:FBL": 1.1,
+        "EQ:AMZU": 1.55,
+        "EQ:MSFU": 1.12,
+        "EQ:FBL": 1.47,
     }
 
-    # # TW market -- verified
-    # benchmark_ticker = "2330.TW"
-    # strategy_symbols_allocation = {"EQ:2330.TW": 1.0}
-    # # comparable performance and reduced draw-down.
-    # strategy_symbols_allocation = {"EQ:00713.TW": 1.0, "EQ:00631L.TW": 0.5}
-    # # strategy_symbols_allocation = {'EQ:00713.TW': 1.0}
+    # high volatile
+    strategy_symbols_allocation = {
+        "EQ:NVDL": 10,
+        "EQ:AMDL": 2,
+        "EQ:ANET": 1.4,
+    }
+
+    # TW market -- verified
+    if market_selection == "TW":
+        benchmark_ticker = "2330.TW"
+        strategy_symbols_allocation = {"EQ:2330.TW": 1.0}
+        # comparable performance and reduced draw-down.
+        strategy_symbols_allocation = {"EQ:00713.TW": 1.0, "EQ:00631L.TW": 0.5}
 
     strategy_symbols = [k.replace("EQ:", "") for k in strategy_symbols_allocation] + [
         benchmark_ticker
