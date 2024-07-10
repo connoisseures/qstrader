@@ -15,13 +15,14 @@ from qstrader.utils.helper import normalize_value
 
 if __name__ == "__main__":
     # start_date = "2023-10-31"
-    start_date = "2023-5-30"
-    start_date = "2024-6-22"
+    start_date = "2021-5-30"
+    # start_date = "2022-5-30"
+    # start_date = "2024-6-22"
     end_date = "2024-11-30"
 
     market_selection = "US"  # "TW"
-    is_volatile = True  ## False 
-    
+    is_volatile = False  ## False
+
     benchmark_ticker = "SPY"
 
     # M7
@@ -33,6 +34,7 @@ if __name__ == "__main__":
         "EQ:AMZU": 1.55,
         "EQ:MSFU": 1.12,
         "EQ:FBL": 1.47,
+        # "Cash": 0.05,
     }
 
     if is_volatile:
@@ -48,7 +50,11 @@ if __name__ == "__main__":
         benchmark_ticker = "2330.TW"
         strategy_symbols_allocation = {"EQ:2330.TW": 1.0}
         # comparable performance and reduced draw-down.
-        strategy_symbols_allocation = {"EQ:00713.TW": 1.0, "EQ:00631L.TW": 0.5}
+        strategy_symbols_allocation = {
+            "EQ:00713.TW": 1.05,
+            "EQ:00631L.TW": 0.5,
+            "Cash": 0.05,
+        }
 
     strategy_symbols = [k.replace("EQ:", "") for k in strategy_symbols_allocation] + [
         benchmark_ticker
@@ -57,6 +63,9 @@ if __name__ == "__main__":
 
     # normalize allocation
     strategy_symbols_allocation = normalize_value(strategy_symbols_allocation)
+    cash_buffer_percentage = strategy_symbols_allocation.get("Cash", 0.01)
+    if "Cash" in strategy_symbols_allocation:
+        strategy_symbols_allocation.pop("Cash")
 
     start_dt = pd.Timestamp(f"{start_date} 14:30:00", tz=pytz.UTC)
     end_dt = pd.Timestamp(f"{end_date} 23:59:00", tz=pytz.UTC)
@@ -83,7 +92,7 @@ if __name__ == "__main__":
         strategy_alpha_model,
         rebalance="end_of_month",
         long_only=True,
-        cash_buffer_percentage=0.01,
+        cash_buffer_percentage=cash_buffer_percentage,
         data_handler=data_handler,
     )
     strategy_backtest.run()
@@ -115,6 +124,7 @@ if __name__ == "__main__":
         title=strategy_title,
     )
     export_name = (
+        "-".join([start_date, end_date]) + "-" +
         re.sub(r"[\{,\},EQ:,\']", "", strategy_title)
         .replace(".TW", "")
         .replace(" ", "-")
