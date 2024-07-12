@@ -1,6 +1,7 @@
 
 strategy_us_1:
   market: US
+  benchmark_ticker: SPY
   strategy_symbols_allocation:
     EQ:AAPU: 5
     EQ:TQQQ: 1.5
@@ -11,6 +12,7 @@ strategy_us_1:
 
 strategy_us_2:
   market: US
+  benchmark_ticker: SPY
   strategy_symbols_allocation:
     EQ:AAPU: 5
     EQ:TQQQ: 1.5
@@ -21,6 +23,7 @@ strategy_us_2:
 
 strategy_us_3:
   market: US
+  benchmark_ticker: SPY
   strategy_symbols_allocation:
     EQ:NVDL: 10
     EQ:AMDL: 2
