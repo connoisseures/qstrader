@@ -1,0 +1,37 @@
+
+strategy_us_1:
+  market: US
+  strategy_symbols_allocation:
+    EQ:AAPU: 5
+    EQ:TQQQ: 1.5
+    EQ:AMZU: 1.55
+    EQ:MSFU: 1.12
+    EQ:FBL: 1.47
+  comment: ""
+
+strategy_us_2:
+  market: US
+  strategy_symbols_allocation:
+    EQ:AAPU: 5
+    EQ:TQQQ: 1.5
+    EQ:BRK-B: 1.55
+    EQ:MSFU: 1.12
+    EQ:FBL: 1.47
+  comment: ""
+
+strategy_us_3:
+  market: US
+  strategy_symbols_allocation:
+    EQ:NVDL: 10
+    EQ:AMDL: 2
+    EQ:ANET: 1.4
+  comment: ""
+
+strategy_tw_1:
+  market: TW
+  benchmark_ticker: 2330.TW
+  strategy_symbols_allocation:
+    EQ:00713.TW: 1.1
+    EQ:00631L.TW: 0.5
+  comment: ""
+
