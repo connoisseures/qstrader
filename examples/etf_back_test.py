@@ -23,7 +23,6 @@ if __name__ == "__main__":
     strategy_name = "strategy_risky_us_1"
 
     strategy_name = "strategy_tw_1"
-    strategy_name = "strategy_us_aapl_tqqq_3"
 
     strategy = load_json_yaml(file_path="./strategy.yaml").get(strategy_name)
 
@@ -35,6 +34,7 @@ if __name__ == "__main__":
     market = strategy["market"]
     strategy_symbols_allocation = strategy["strategy_symbols_allocation"]
     benchmark_ticker = strategy["benchmark_ticker"]
+    month_period_of_rebalance = strategy.get("month_period_of_rebalance", 12)
 
     strategy_symbols = [k.replace("EQ:", "") for k in strategy_symbols_allocation] + [
         benchmark_ticker
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         long_only=True,
         cash_buffer_percentage=cash_buffer_percentage,
         data_handler=data_handler,
-        month_period_of_rebalance=12,
+        month_period_of_rebalance=month_period_of_rebalance,
     )
     strategy_backtest.run()
 
