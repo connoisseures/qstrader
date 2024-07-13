@@ -12,29 +12,28 @@ from qstrader.statistics.tearsheet import TearsheetStatistics
 from qstrader.trading.backtest import BacktestTradingSession
 from qstrader.data.yfloader import Yfloader
 from qstrader.utils.helper import normalize_value
+from qstrader.utils.helper import load_json_yaml
 
 if __name__ == "__main__":
-    start_date = "2019-10-31"
-    end_date = "2024-11-30"
-    benchmark_ticker = "SPY"
-    # strategy_symbols_allocation = {'EQ:SPY': 1.0}
-    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.5}
-    # strategy_symbols_allocation = {'EQ:AAPU': 0.5, 'EQ:TQQQ': 0.3, "EQ:AMZU": 0.2}
-    strategy_symbols_allocation = {
-        # "EQ:AAPL": 4,
-        "EQ:TQQQ": 1,
-        # "EQ:GGLL": 1.1,
-        # "EQ:AMZU": 1.36,
-        # "EQ:MSFU": 1.12,
-        # "EQ:FBL": 1.1,
-    }
+    strategy_name = "strategy_us_1"
+    strategy_name = "strategy_us_aapl_tqqq_2"
+    strategy_name = "strategy_us_aapl_tqqq_3"
+    strategy_name = "strategy_us_msft_tqqq_1"
+    strategy_name = "strategy_us_orcl_tqqq_1"
+    strategy_name = "strategy_risky_us_1"
 
-    # # TW market -- verified
-    # benchmark_ticker = "2330.TW"
-    # strategy_symbols_allocation = {"EQ:2330.TW": 1.0}
-    # # comparable performance and reduced draw-down.
-    # strategy_symbols_allocation = {"EQ:00713.TW": 1.0, "EQ:00631L.TW": 0.5}
-    # # strategy_symbols_allocation = {'EQ:00713.TW': 1.0}
+    strategy_name = "strategy_tw_1"
+
+    strategy = load_json_yaml(file_path="./strategy.yaml").get(strategy_name)
+
+    # start_date = "2023-10-31"
+    start_date = "2021-5-30"
+    # start_date = "2022-5-30"
+    end_date = "2024-11-30"
+
+    market = strategy["market"]
+    strategy_symbols_allocation = strategy["strategy_symbols_allocation"]
+    benchmark_ticker = strategy["benchmark_ticker"]
 
     strategy_symbols = [k.replace("EQ:", "") for k in strategy_symbols_allocation] + [
         benchmark_ticker
@@ -43,6 +42,9 @@ if __name__ == "__main__":
 
     # normalize allocation
     strategy_symbols_allocation = normalize_value(strategy_symbols_allocation)
+    cash_buffer_percentage = strategy_symbols_allocation.get("Cash", 0.01)
+    if "Cash" in strategy_symbols_allocation:
+        strategy_symbols_allocation.pop("Cash")
 
     start_dt = pd.Timestamp(f"{start_date} 14:30:00", tz=pytz.UTC)
     end_dt = pd.Timestamp(f"{end_date} 23:59:00", tz=pytz.UTC)
@@ -69,7 +71,7 @@ if __name__ == "__main__":
         strategy_alpha_model,
         rebalance="end_of_month",
         long_only=True,
-        cash_buffer_percentage=0.01,
+        cash_buffer_percentage=cash_buffer_percentage,
         data_handler=data_handler,
     )
     strategy_backtest.run()
@@ -101,6 +103,7 @@ if __name__ == "__main__":
         title=strategy_title,
     )
     export_name = (
+        "-".join([market, start_date, end_date]) + "-" +
         re.sub(r"[\{,\},EQ:,\']", "", strategy_title)
         .replace(".TW", "")
         .replace(" ", "-")
