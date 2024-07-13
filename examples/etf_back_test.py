@@ -16,14 +16,20 @@ from qstrader.utils.helper import load_json_yaml
 
 if __name__ == "__main__":
     strategy_name = "strategy_us_1"
+    strategy_name = "strategy_us_aapl_tqqq_1"
+    strategy_name = "strategy_us_aapl_tqqq_2"
+    strategy_name = "strategy_risky_us_1"
+    strategy_name = "strategy_tw_1"
+    strategy_name = "strategy_us_msft_tqqq_1"
+
     strategy = load_json_yaml(file_path="./strategy.yaml").get(strategy_name)
 
     # start_date = "2023-10-31"
     start_date = "2021-5-30"
     # start_date = "2022-5-30"
-    # start_date = "2024-6-22"
     end_date = "2024-11-30"
 
+    market = strategy["market"]
     strategy_symbols_allocation = strategy["strategy_symbols_allocation"]
     benchmark_ticker = strategy["benchmark_ticker"]
 
@@ -95,7 +101,7 @@ if __name__ == "__main__":
         title=strategy_title,
     )
     export_name = (
-        "-".join([start_date, end_date]) + "-" +
+        "-".join([market, start_date, end_date]) + "-" +
         re.sub(r"[\{,\},EQ:,\']", "", strategy_title)
         .replace(".TW", "")
         .replace(" ", "-")
