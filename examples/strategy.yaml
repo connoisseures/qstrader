@@ -70,7 +70,7 @@ strategy_us_orcl_tqqq_1:
   strategy_symbols_allocation:
     EQ:ORCL: 5
     EQ:TQQQ: 5
-  comment: "return: 89% ;max-down: 61%"
+  comment: "return: 89% ;max-down: 61%l favorable strategy"
 
 strategy_us_orcl_tqqq_2:
   market: US
