@@ -28,12 +28,19 @@ class EndOfMonthRebalance(Rebalance):
         self,
         start_dt,
         end_dt,
-        pre_market=False
+        pre_market=False,
+        month_period: int = 1,
     ):
         self.start_dt = start_dt
         self.end_dt = end_dt
         self.market_time = self._set_market_time(pre_market)
         self.rebalances = self._generate_rebalances()
+        self.freq = self._set_freq_mapping(month_period)
+
+    def _set_freq_mapping(self, month_period) -> str:
+        if month_period == 1:
+            return "BME"
+        return str(month_period) + "M"
 
     def _set_market_time(self, pre_market):
         """
@@ -62,16 +69,10 @@ class EndOfMonthRebalance(Rebalance):
         `List[pd.Timestamp]`
             The list of rebalance timestamps.
         """
-        rebalance_dates = pd.date_range(
-            start=self.start_dt,
-            end=self.end_dt,
-            freq='BME'
-        )
+        rebalance_dates = pd.date_range(start=self.start_dt, end=self.end_dt, freq="6M")
 
         rebalance_times = [
-            pd.Timestamp(
-                "%s %s" % (date, self.market_time), tz=pytz.utc
-            )
+            pd.Timestamp("%s %s" % (date, self.market_time), tz=pytz.utc)
             for date in rebalance_dates
         ]
         return rebalance_times
