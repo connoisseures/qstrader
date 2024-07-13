@@ -33,6 +33,24 @@ strategy_us_aapl_tqqq_3:
   market: US
   benchmark_ticker: SPY
   strategy_symbols_allocation:
+    EQ:AAPL: 3
+    EQ:TQQQ: 5
+    EQ:ORCL: 2
+  comment: "return: 84% ;max-down: 59%; favorable strategy"
+
+strategy_us_aapl_tqqq_4:
+  market: US
+  benchmark_ticker: SPY
+  strategy_symbols_allocation:
+    EQ:AAPL: 3
+    EQ:TQQQ: 5
+    EQ:BRK-B: 2
+  comment: "return: 77% ;max-down: 57%"
+
+strategy_us_brk_tqqq_1:
+  market: US
+  benchmark_ticker: SPY
+  strategy_symbols_allocation:
     EQ:TQQQ: 5
     EQ:BRK-B: 5
   comment: "return: 70% ;max-down: 53%"
@@ -44,8 +62,24 @@ strategy_us_msft_tqqq_1:
     EQ:MSFT: 5
     EQ:TQQQ: 5
     EQ:BRK-B: 1
-  comment: "return: 80% ;max-down: 58%"
+  comment: "return: 80% ;max-down: 58%; favorable strategy"
 
+strategy_us_orcl_tqqq_1:
+  market: US
+  benchmark_ticker: SPY
+  strategy_symbols_allocation:
+    EQ:ORCL: 5
+    EQ:TQQQ: 5
+  comment: "return: 89% ;max-down: 61%"
+
+strategy_us_orcl_tqqq_2:
+  market: US
+  benchmark_ticker: SPY
+  strategy_symbols_allocation:
+    EQ:ORCL: 2.5
+    EQ:BRK-B: 2.5
+    EQ:TQQQ: 5
+  comment: "return: 80% ;max-down: 56%"
 
 strategy_us_tqqq_1:
   market: US
