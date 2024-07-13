@@ -16,11 +16,13 @@ from qstrader.utils.helper import load_json_yaml
 
 if __name__ == "__main__":
     strategy_name = "strategy_us_1"
-    strategy_name = "strategy_us_aapl_tqqq_1"
     strategy_name = "strategy_us_aapl_tqqq_2"
-    strategy_name = "strategy_risky_us_1"
-    strategy_name = "strategy_tw_1"
+    strategy_name = "strategy_us_aapl_tqqq_3"
     strategy_name = "strategy_us_msft_tqqq_1"
+    strategy_name = "strategy_us_orcl_tqqq_1"
+    strategy_name = "strategy_risky_us_1"
+
+    strategy_name = "strategy_tw_1"
 
     strategy = load_json_yaml(file_path="./strategy.yaml").get(strategy_name)
 
