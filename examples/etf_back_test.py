@@ -23,6 +23,7 @@ if __name__ == "__main__":
     strategy_name = "strategy_risky_us_1"
 
     strategy_name = "strategy_tw_1"
+    strategy_name = "strategy_us_aapl_tqqq_3"
 
     strategy = load_json_yaml(file_path="./strategy.yaml").get(strategy_name)
 
@@ -73,6 +74,7 @@ if __name__ == "__main__":
         long_only=True,
         cash_buffer_percentage=cash_buffer_percentage,
         data_handler=data_handler,
+        month_period_of_rebalance=12,
     )
     strategy_backtest.run()
 
